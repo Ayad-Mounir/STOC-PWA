@@ -1,4 +1,8 @@
-﻿ */function printBlankForm(){const rows=15;let rowsHtml="";for(let i=0;i<rows;i++){rowsHtml+=`
+/* ══ PRINT BLANK FORM ══
+ * يفتح نافذة طباعة نموذج فارغ يشبه الصورة:
+ *   اللون | العدد | المتر / كيلو
+ *  مع خانة مخصصة لتعليق عينة القماش بدبوس
+ */function printBlankForm(){const rows=15;let rowsHtml="";for(let i=0;i<rows;i++){rowsHtml+=`
       <tr>
         <td class="num-cell">${i+1}</td>
         <td class="swatch-cell"><div class="swatch-box"></div></td>
@@ -178,4 +182,4 @@
 </div>
 <script>window.onload=()=>{window.print();}<\/script>
 </body>
-</html>`;const w=window.open("","_blank","width=800,height=900");if(w){w.document.write(html);w.document.close();}}/* ══ FORM SCAN MODAL ══
+</html>`;const w=window.open("","_blank","width=800,height=900");if(w){w.document.write(html);w.document.close();}}
