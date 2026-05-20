@@ -8,7 +8,7 @@
 <html dir="rtl" lang="ar">
 <head>
 <meta charset="utf-8"/>
-<title>ظ†ظ…ظˆط°ط¬ ط¬ط±ط¯ ط§ظ„ط±ظˆظ„ظˆط§طھ</title>
+<title>نموذج جرد الرولوات</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet"/>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -31,7 +31,7 @@
     padding:4mm 5mm 3mm;
   }
 
-  /* â”€â”€ ط±ط£ط³ ط§ظ„طµظپط­ط© â”€â”€ */
+  /* ── رأس الصفحة ── */
   .page-header{
     display:flex;
     justify-content:space-between;
@@ -46,7 +46,7 @@
   .doc-meta{text-align:left;font-size:9.5px;color:#334155;line-height:1.7;}
   .doc-meta span{font-weight:800;}
 
-  /* â”€â”€ ط³ط·ط± ط§ظ„ط¨ظٹط§ظ†ط§طھ â”€â”€ */
+  /* ── سطر البيانات ── */
   .meta-row{
     display:flex;
     gap:6mm;
@@ -62,7 +62,7 @@
   .meta-row label{font-weight:800;white-space:nowrap;}
   .meta-row .field{border-bottom:1px solid #94a3b8;min-width:28mm;display:inline-block;height:4mm;}
 
-  /* â”€â”€ ط§ظ„ط¬ط¯ظˆظ„ â”€â”€ */
+  /* ── الجدول ── */
   table{
     width:100%;
     border-collapse:collapse;
@@ -111,7 +111,7 @@
     border-top:2px solid #0d1117;
   }
 
-  /* â”€â”€ طھط°ظٹظٹظ„ â”€â”€ */
+  /* ── تذييل ── */
   .footer{
     margin-top:2mm;
     padding-top:2mm;
@@ -129,32 +129,32 @@
 
   <div class="page-header">
     <div>
-      <div class="brand">ًں“¦ ظ†ظ…ظˆط°ط¬ ط¬ط±ط¯ ط§ظ„ط±ظˆظ„ظˆط§طھ</div>
-      <div class="doc-title">ظ…ط®ط²ظˆظ† ط§ظ„ط£ظ‚ظ…ط´ط© â€” ط¥ط¯ط®ط§ظ„ ظٹط¯ظˆظٹ</div>
+      <div class="brand">📦 نموذج جرد الرولوات</div>
+      <div class="doc-title">مخزون الأقمشة — إدخال يدوي</div>
     </div>
     <div class="doc-meta">
-      <div>ط§ظ„طھط§ط±ظٹط®: <span>_____ / _____ / _____</span></div>
-      <div>ط§ظ„طµظ†ظپ: <span>_______________________</span></div>
+      <div>التاريخ: <span>_____ / _____ / _____</span></div>
+      <div>الصنف: <span>_______________________</span></div>
     </div>
   </div>
 
   <div class="meta-row">
-    <label>ط§ظ„ظ…ظˆط±ط¯:</label> <span class="field"></span>
+    <label>المورد:</label> <span class="field"></span>
     &nbsp;&nbsp;
-    <label>ط§ظ„ظ†ظˆط¹:</label> <span class="field"></span>
+    <label>النوع:</label> <span class="field"></span>
     &nbsp;&nbsp;
-    <label>ط§ظ„ظ‚ظٹط§ط³:</label> <span class="field"></span>
+    <label>القياس:</label> <span class="field"></span>
     &nbsp;&nbsp;
-    <label>ط§ظ„ط³ط¹ط±/ظ…:</label> <span class="field"></span>
+    <label>السعر/م:</label> <span class="field"></span>
   </div>
 
   <table>
     <thead>
       <tr>
         <th class="num-th">#</th>
-        <th class="swatch-th">ط§ظ„ظ„ظˆظ† &nbsp;<span style="font-weight:600;font-size:8px;opacity:.75">(ط¹ظٹظ†ط© ط§ظ„ظ‚ظ…ط§ط´)</span></th>
-        <th class="count-th">ط§ظ„ط¹ط¯ط¯</th>
-        <th class="meter-th">ط§ظ„ظ…طھط± / ظƒظٹظ„ظˆ</th>
+        <th class="swatch-th">اللون &nbsp;<span style="font-weight:600;font-size:8px;opacity:.75">(عينة القماش)</span></th>
+        <th class="count-th">العدد</th>
+        <th class="meter-th">المتر / كيلو</th>
       </tr>
     </thead>
     <tbody>
@@ -162,7 +162,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="2">ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ</td>
+        <td colspan="2">الإجمالي</td>
         <td style="text-align:center">_____</td>
         <td style="text-align:center">_____</td>
       </tr>
@@ -170,12 +170,12 @@
   </table>
 
   <div class="footer">
-    <span>ط§ظ„ظ…ط³ط¤ظˆظ„: ___________________</span>
-    <span>ط§ظ„طھظˆظ‚ظٹط¹: ___________________</span>
-    <span>ط·ظڈط¨ط¹ ظ…ظ† ظ†ط¸ط§ظ… ط§ظ„ظ…ط®ط²ظˆظ†</span>
+    <span>المسؤول: ___________________</span>
+    <span>التوقيع: ___________________</span>
+    <span>طُبع من نظام المخزون</span>
   </div>
 
 </div>
 <script>window.onload=()=>{window.print();}<\/script>
 </body>
-</html>`;const w=window.open("","_blank","width=800,height=900");if(w){w.document.write(html);w.document.close();}}/* â•گâ•گ FORM SCAN MODAL â•گâ•گ
+</html>`;const w=window.open("","_blank","width=800,height=900");if(w){w.document.write(html);w.document.close();}}/* ══ FORM SCAN MODAL ══
