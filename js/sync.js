@@ -264,8 +264,8 @@
   async function sbFactoryReset() {
     var sb = getClient();
     if (sb) {
+      // نمسح البيانات فقط — لا نمسح stk_config (يحتوي على اسم الشركة للترخيص)
       await sb.from("stk_data").delete().neq("id", "___never___");
-      await sb.from("stk_config").delete().neq("key", "___never___");
       var now = Date.now();
       await sb.from("stk_meta").upsert({ id:1, ts:now, reset_at:now, order_seq:0 });
     }
@@ -273,23 +273,37 @@
     DB  = { factories:[], suppliers:[], customers:[], types:[], measures:[],
             packagings:[], categories:[], sizes:[], items:[], orders:[], invoices:[],
             ts: Date.now(), reset_at: Date.now() };
-    CFG = Object.assign({}, SEED_CFG);
-    // مسح localStorage — حفظ مفاتيح الاتصال فقط
-    var keepKeys = [SB_CFG_KEY, "stk-supabase-cfg-v1", "stk-drive-cfg-v1", "stk-sb-cfg-v1", "stoc-license-v1", "stoc-build"];
+    // مسح localStorage — حفظ الترخيص + إعدادات الاتصال + بيانات الشركة
+    var keepKeys = [
+      "stoc-license-v1",   // الترخيص — لا يُمسح أبداً
+      "stoc-build",        // cache buster version
+      SB_CFG_KEY,
+      "stk-supabase-cfg-v1",
+      "stk-drive-cfg-v1",
+      "stk-sb-cfg-v1",
+      "stk-factory-v1",   // بيانات الشركة (اسم + شعار)
+      "stk-cfg-v1",       // إعدادات التطبيق
+    ];
     var saved = {};
     keepKeys.forEach(function(k){ try{ saved[k]=localStorage.getItem(k); }catch{} });
     try { localStorage.clear(); } catch(e) {}
     keepKeys.forEach(function(k){ try{ if(saved[k]!=null) localStorage.setItem(k,saved[k]); }catch{} });
     // حفظ DB الفارغ في localStorage
     saveLocalDB(DB);
-    saveLocalCFG(CFG);
-    // مسح IndexedDB بالكامل
+    // مسح IndexedDB — البيانات الرئيسية فقط (بدون حذف قاعدة البيانات كلها)
     try {
-      await new Promise(function(res) {
-        var req = indexedDB.deleteDatabase("stk-idb-v1");
-        req.onsuccess = res; req.onerror = res; req.onblocked = res;
-      });
-    } catch(e) { console.warn("IDB delete:", e); }
+      var idbReq = indexedDB.open("stk-idb-v1", 1);
+      idbReq.onsuccess = function(e) {
+        var db = e.target.result;
+        try {
+          var tx = db.transaction("kv", "readwrite");
+          var st = tx.objectStore("kv");
+          st.delete("stk-hybrid-db-v1");
+          st.delete("stk-hybrid-pending-v1");
+          st.delete("stk-hybrid-meta-v1");
+        } catch(err) {}
+      };
+    } catch(e) { console.warn("IDB clear:", e); }
     return { ok: true, reset_at: DB.reset_at };
   }
 
