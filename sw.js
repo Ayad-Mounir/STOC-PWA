@@ -3,8 +3,8 @@
    الإصدار: 3.0.0 — المكتبات منفصلة في مجلد libs/
    ════════════════════════════════════════════════════════ */
 
-const CACHE_NAME    = "stock-manager-v7";
-const RUNTIME_CACHE = "stock-runtime-v5";
+const CACHE_NAME    = "stock-manager-v8";
+const RUNTIME_CACHE = "stock-runtime-v6";
 
 /* ── الأصول المُخزَّنة فور التثبيت (App Shell) ── */
 const PRECACHE_URLS = [
