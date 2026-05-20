@@ -274,6 +274,21 @@
     DB.ts = Date.now();
     saveLocalDB(DB);
     saveLocalCFG(CFG);
+    // مسح IndexedDB — المصدر الحقيقي للبيانات
+    try {
+      await new Promise(function(res, rej) {
+        var req = indexedDB.deleteDatabase("stk-idb-v1");
+        req.onsuccess = res;
+        req.onerror   = rej;
+        req.onblocked = res;
+      });
+    } catch(e) { console.warn("IDB delete failed:", e); }
+    // مسح localStorage بالكامل ما عدا إعدادات الاتصال
+    var keepKeys = ["stk-sb-cfg-v1", "stk-drive-cfg-v1", "stk-cost-types-v1", "stk-factory-v1"];
+    var saved = {};
+    keepKeys.forEach(function(k){ try{ saved[k]=localStorage.getItem(k); }catch{} });
+    localStorage.clear();
+    keepKeys.forEach(function(k){ try{ if(saved[k]!=null) localStorage.setItem(k,saved[k]); }catch{} });
     return { ok: true };
   }
 
