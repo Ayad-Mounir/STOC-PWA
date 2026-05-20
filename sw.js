@@ -21,6 +21,29 @@ const PRECACHE_URLS = [
   "./libs/html2canvas.min.js",
   "./libs/jspdf.min.js",
   "./libs/supabase.min.js",
+  /* CSS */
+  "./css/base.css",
+  "./css/reports.css",
+  "./css/components.css",
+  /* JS core */
+  "./js/loader.js",
+  "./js/cache-buster.js",
+  "./js/error-handler.js",
+  "./js/sync.js",
+  "./js/auth.js",
+  "./js/config.js",
+  "./js/db.js",
+  "./js/ui.js",
+  "./js/pdf.js",
+  "./js/qr.js",
+  "./js/pwa.js",
+  /* JS page components (Phase 6) */
+  "./js/pages/dashboard.js",
+  "./js/pages/inventory.js",
+  "./js/pages/settings.js",
+  "./js/pages/orders.js",
+  "./js/pages/reports.js",
+  "./js/pages/app.js",
 ];
 
 /* ══ INSTALL ══════════════════════════════════════════════ */
