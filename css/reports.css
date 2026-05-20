@@ -1,0 +1,402 @@
+    /* ═══ PROFESSIONAL REPORT DESIGN SYSTEM ═══ */
+    @page{size:A4;margin:15mm 14mm 18mm 14mm;}
+    @media print{
+      @page{size:210mm auto;margin:3mm 5mm 3mm 5mm;}
+      *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}
+      html,body{background:#fff!important;margin:0!important;padding:0!important;font-size:6.5pt!important;height:auto!important;min-height:0!important;}
+      #root{min-height:0!important;height:auto!important;background:#fff!important;}
+      .no-print{display:none!important;}
+      .rpt-tb{display:none!important;}
+      body,#root,#root>*,#root>*>*{background:#fff!important;}
+      body>*:not(#root){display:none!important;}
+      .rpt{margin:0!important;box-shadow:none!important;max-width:none!important;width:100%!important;}
+      .rpt-page{padding:2mm 4mm 2mm!important;page-break-after:auto;break-after:auto;}
+      .rpt-item{page-break-inside:avoid;padding:5mm 7mm 6mm!important;}
+      table{page-break-inside:auto;}
+      .rpt-top2col{page-break-inside:avoid;break-inside:avoid;}
+      .rpt-color-grid{page-break-inside:auto!important;break-inside:auto!important;}
+      /* ── MASTHEAD ultra-slim ── */
+      .rpt-mast{padding-bottom:1mm!important;margin-bottom:1.5mm!important;border-bottom-width:1px!important;}
+      .rpt-mast::after{display:none!important;}
+      .rpt-mark{width:22px!important;height:22px!important;font-size:10px!important;}
+      .rpt-brandname{font-size:9px!important;}
+      .rpt-brandtag{font-size:7px!important;}
+      .rpt-docinfo-row{margin-bottom:0.5mm!important;}
+      .rpt-docinfo-label{font-size:6px!important;}
+      .rpt-docinfo-val{font-size:8px!important;}
+      /* ── Sections ── */
+      .rpt-sec{margin-bottom:2mm!important;break-inside:auto!important;}
+      .rpt-sec-title{padding-bottom:1mm!important;margin-bottom:1.5mm!important;border-bottom-width:1px!important;}
+      .rpt-sec-num{font-size:7px!important;}
+      .rpt-sec-name{font-size:9px!important;}
+      .rpt-sec-hint{font-size:7px!important;}
+      /* ── Meta table ── */
+      .rpt-meta td{padding:0.8mm 2mm!important;font-size:7.5pt!important;}
+      .rpt-meta .ml{font-size:7pt!important;width:22mm!important;}
+      /* ── Data table ── */
+      .rpt-table thead th{padding:0.8mm 1.5mm!important;font-size:7px!important;}
+      .rpt-table tbody td{padding:0.8mm 1.5mm!important;font-size:7.5pt!important;}
+      .rpt-table tfoot td{padding:1mm 1.5mm!important;font-size:7.5pt!important;}
+      /* ── KPI cards ── */
+      .rpt-kpi{padding:1.5mm 1.5mm!important;}
+      .rpt-kpi-v{font-size:11px!important;}
+      .rpt-kpi-l{font-size:6.5px!important;margin-top:0.5mm!important;}
+      .rpt-kpis{gap:1.5mm!important;}
+      /* ── Grand total banner ── */
+      .rpt-grand{padding:2mm 4mm!important;margin-top:2mm!important;}
+      .rpt-grand-v{font-size:15px!important;}
+      .rpt-grand-l{font-size:9px!important;}
+      .rpt-grand-kicker{font-size:7px!important;}
+      /* ── Color grid ── */
+      .rpt-color-grid{grid-template-columns:repeat(4,1fr)!important;gap:1mm!important;margin-bottom:1.5mm!important;}
+      .rpt-color-head{padding:1.5mm 2mm!important;}
+      .rpt-color{margin-bottom:1.5mm!important;}
+      /* ── Signature: hide in print ── */
+      .rpt-sign{display:none!important;}
+      /* ── Footer ── */
+      .rpt-foot{margin-top:2mm!important;padding-top:1.5mm!important;font-size:7px!important;}
+      .rpt-foot-brand{font-size:7px!important;}
+      /* ── 2-col layout for info+summary ── */
+      .rpt-top2col{display:grid!important;grid-template-columns:1fr 1fr!important;gap:3mm!important;margin-bottom:2mm!important;}
+      /* ── إصلاح الشريط الأسود: إخفاء خلفية الـ container الداكنة ── */
+      #root > div{background:#fff!important;min-height:0!important;color:#0f172a!important;}
+      /* إخفاء أي عناصر fixed لا تنتمي للتقرير */
+      [style*="position:fixed"]:not(.rpt-tb){display:none!important;}
+      /* ── OrderPdfPreview: ضغط إضافي لتناسب ورقة واحدة ── */
+      .rpt-mainimg{max-height:35mm!important;}
+      .rpt-sec{margin-bottom:1mm!important;}
+      .rpt-sec-title{padding-bottom:0.5mm!important;margin-bottom:0.8mm!important;}
+      .rpt-meta td{padding:0.4mm 1.5mm!important;font-size:6.5pt!important;}
+      .rpt-meta .ml{font-size:6pt!important;width:18mm!important;}
+      .rpt-table thead th{padding:0.4mm 1mm!important;font-size:6pt!important;}
+      .rpt-table tbody td{padding:0.4mm 1mm!important;font-size:6.5pt!important;}
+      .rpt-table tfoot td{padding:0.5mm 1mm!important;font-size:6.5pt!important;}
+      .rpt-color-grid{grid-template-columns:repeat(5,1fr)!important;gap:0.5mm!important;margin-bottom:1mm!important;}
+      .rpt-color-head{padding:0.8mm 1mm!important;}
+      .rpt-color{margin-bottom:0.8mm!important;}
+      .rpt-kpi{padding:0.8mm 1mm!important;}
+      .rpt-kpi-v{font-size:9px!important;}
+      .rpt-kpi-l{font-size:5.5px!important;margin-top:0.3mm!important;}
+      .rpt-kpis{gap:0.8mm!important;}
+      .rpt-grand{padding:1mm 2mm!important;margin-top:1mm!important;}
+      .rpt-grand-v{font-size:12px!important;}
+      .rpt-grand-l{font-size:7px!important;}
+      .rpt-foot{margin-top:1mm!important;padding-top:0.8mm!important;}
+      /* تصغير صور الألوان في الجدول */
+      .rpt-table td img{width:6mm!important;height:6mm!important;}
+      .rpt-table th:has(+ th + th + th){display:none!important;}
+      /* تصغير بلوكات الحساب الإجمالي */
+      .rpt-top2col > div{padding:2mm!important;}
+    }
+    @media screen{
+      body.report-mode{background:#e2e8f0!important;padding:24px 12px;}
+      .rpt{box-shadow:0 10px 60px rgba(15,23,42,.15);margin:0 auto 20px;max-width:210mm;}
+    }
+    /* Report container */
+    .rpt{background:#fff;color:#0f172a;font-family:'Cairo',sans-serif;direction:rtl;font-size:11px;line-height:1.55;}
+    .rpt *{box-sizing:border-box;}
+    .rpt-page{padding:10mm 14mm 14mm;position:relative;}
+
+    /* Masthead (document header) */
+    .rpt-mast{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:6mm;border-bottom:2.5px solid #0f172a;margin-bottom:8mm;position:relative;}
+    .rpt-mast::after{content:'';position:absolute;bottom:-5px;right:0;width:60mm;height:2px;background:#b45309;}
+    .rpt-brand{display:flex;align-items:center;gap:10px;}
+    .rpt-mark{width:40px;height:40px;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;letter-spacing:-1px;}
+    .rpt-brandname{font-weight:800;color:#0f172a;font-size:13px;}
+    .rpt-brandtag{color:#64748b;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;margin-top:2px;font-weight:600;}
+    .rpt-docinfo{text-align:left;direction:ltr;}
+    .rpt-docinfo-label{color:#64748b;font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:1px;}
+    .rpt-docinfo-val{color:#0f172a;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;}
+    .rpt-docinfo-row{margin-bottom:3mm;}
+    .rpt-docinfo-row:last-child{margin-bottom:0;}
+
+    /* Document title */
+    .rpt-doctitle{text-align:center;margin:0 0 8mm;}
+    .rpt-doctitle-kicker{color:#b45309;font-size:9px;letter-spacing:4px;text-transform:uppercase;font-weight:700;margin-bottom:2mm;}
+    .rpt-doctitle-h{font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.3px;line-height:1.2;}
+    .rpt-doctitle-sub{color:#64748b;font-size:11px;margin-top:2mm;}
+
+    /* Section */
+    .rpt-sec{margin-bottom:8mm;break-inside:avoid;}
+    .rpt-sec-title{display:flex;align-items:baseline;gap:8px;padding-bottom:2.5mm;border-bottom:1.5px solid #0f172a;margin-bottom:4mm;}
+    .rpt-sec-num{font-size:9px;font-weight:800;color:#b45309;letter-spacing:2px;font-variant-numeric:tabular-nums;}
+    .rpt-sec-name{font-size:12px;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
+    .rpt-sec-hint{margin-right:auto;color:#64748b;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+
+    /* KPI summary cards */
+    .rpt-kpis{display:flex;gap:3mm;}
+    .rpt-kpi{flex:1;border:1px solid #cbd5e1;padding:4mm 3mm;text-align:center;background:#f8fafc;}
+    .rpt-kpi-v{font-size:18px;font-weight:800;color:#0f172a;line-height:1.1;font-variant-numeric:tabular-nums;}
+    .rpt-kpi-l{font-size:8.5px;color:#475569;letter-spacing:1.5px;text-transform:uppercase;margin-top:2mm;font-weight:700;}
+    .rpt-kpi-gold{background:#fffbeb;border-color:#fcd34d;}
+    .rpt-kpi-gold .rpt-kpi-v{color:#b45309;}
+
+    /* Meta info table */
+    .rpt-meta{border:1px solid #cbd5e1;width:100%;border-collapse:collapse;}
+    .rpt-meta td{padding:2.5mm 4mm;border-bottom:1px solid #e2e8f0;font-size:11px;vertical-align:top;}
+    .rpt-meta tr:last-child td{border-bottom:0;}
+    .rpt-meta .ml{background:#f1f5f9;color:#334155;font-weight:700;font-size:10px;letter-spacing:.3px;width:30mm;white-space:nowrap;border-left:1px solid #e2e8f0;}
+    .rpt-meta .mv{color:#0f172a;}
+    .rpt-meta .mv strong{font-weight:800;color:#0f172a;}
+
+    /* Main image */
+    .rpt-mainimg{width:100%;max-height:70mm;object-fit:cover;border:1px solid #cbd5e1;display:block;}
+    .rpt-imgcap{margin-top:2mm;color:#64748b;font-size:9px;text-align:center;letter-spacing:.5px;}
+
+    /* Color block */
+    .rpt-color{border:1px solid #cbd5e1;margin-bottom:4mm;break-inside:avoid;overflow:hidden;}
+    .rpt-color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-bottom:3mm;}
+    .rpt-color-head{display:flex;align-items:center;gap:4mm;padding:3mm 4mm;background:#f8fafc;border-bottom:1.5px solid #0f172a;}
+    .rpt-color-num{background:#0f172a;color:#fff;min-width:8mm;height:8mm;text-align:center;line-height:8mm;font-size:10px;font-weight:800;flex-shrink:0;font-variant-numeric:tabular-nums;letter-spacing:.5px;}
+    .rpt-color-img{width:16mm;height:16mm;object-fit:cover;border:1px solid #cbd5e1;flex-shrink:0;}
+    .rpt-color-ph{width:16mm;height:16mm;border:1px dashed #cbd5e1;background:#fff;flex-shrink:0;position:relative;}
+    .rpt-color-ph::after{content:'—';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#cbd5e1;font-size:16px;font-weight:700;}
+    .rpt-color-info{flex:1;min-width:0;}
+    .rpt-color-name{font-weight:800;font-size:13px;color:#0f172a;letter-spacing:-.2px;}
+    .rpt-color-stats{color:#475569;font-size:10px;margin-top:1mm;font-variant-numeric:tabular-nums;}
+    .rpt-color-stats strong{color:#b45309;font-weight:800;}
+
+    /* Table */
+    .rpt-table{width:100%;border-collapse:collapse;font-size:11px;}
+    .rpt-table thead th{padding:2.5mm 3mm;text-align:right;font-weight:700;font-size:9.5px;color:#334155;letter-spacing:.8px;text-transform:uppercase;background:#fff;border-bottom:1.5px solid #0f172a;}
+    .rpt-table thead th.n{text-align:left;direction:ltr;}
+    .rpt-table tbody td{padding:2.5mm 3mm;border-bottom:1px solid #f1f5f9;color:#0f172a;vertical-align:middle;}
+    .rpt-table tbody td.n{text-align:left;direction:ltr;font-variant-numeric:tabular-nums;}
+    .rpt-table tbody td.rowi{color:#94a3b8;font-size:10px;width:8mm;text-align:center;font-variant-numeric:tabular-nums;}
+    .rpt-table tbody tr:last-child td{border-bottom:1.5px solid #0f172a;}
+    .rpt-table tfoot td{padding:3mm;font-weight:800;color:#0f172a;background:#fffbeb;font-size:11px;border-bottom:2.5px double #0f172a;}
+    .rpt-table tfoot td.n{text-align:left;direction:ltr;font-variant-numeric:tabular-nums;}
+    .rpt-table tfoot td.total-label{letter-spacing:1px;text-transform:uppercase;font-size:9.5px;color:#b45309;}
+
+    /* Grand total */
+    .rpt-grand{margin-top:8mm;background:#0f172a;color:#fff;padding:5mm 6mm;display:flex;justify-content:space-between;align-items:center;break-inside:avoid;}
+    .rpt-grand-l-wrap{display:flex;flex-direction:column;gap:1mm;}
+    .rpt-grand-kicker{color:#fbbf24;font-size:9px;letter-spacing:3px;text-transform:uppercase;font-weight:700;}
+    .rpt-grand-l{font-size:14px;font-weight:700;color:#f1f5f9;}
+    .rpt-grand-r{text-align:left;direction:ltr;}
+    .rpt-grand-v{font-size:24px;font-weight:800;letter-spacing:-.5px;color:#fbbf24;font-variant-numeric:tabular-nums;line-height:1;}
+    .rpt-grand-sub{font-size:10px;color:#cbd5e1;margin-top:1.5mm;font-variant-numeric:tabular-nums;}
+
+    /* Signature / footer */
+    .rpt-sign{margin-top:12mm;display:flex;justify-content:space-between;gap:20mm;break-inside:avoid;}
+    .rpt-sign-box{flex:1;}
+    .rpt-sign-line{border-top:1px solid #94a3b8;margin-bottom:1mm;padding-top:8mm;}
+    .rpt-sign-lbl{color:#64748b;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:600;text-align:center;}
+
+    .rpt-foot{margin-top:10mm;padding-top:3mm;border-top:1px solid #cbd5e1;display:flex;justify-content:space-between;align-items:center;color:#64748b;font-size:9px;}
+    .rpt-foot-brand{font-weight:700;color:#0f172a;letter-spacing:.5px;}
+
+    /* Base screen rule for top2col (overridden by print + mobile) */
+    .rpt-top2col{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-bottom:3mm;}
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    /* MOBILE RESPONSIVE — للمعاينة على الهاتف فقط    */
+    /* الطباعة (@media print) تبقى كما هي A4         */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    @media screen and (max-width: 768px){
+      body.report-mode{padding:8px 4px;}
+      .rpt{
+        max-width:100%!important;
+        width:100%!important;
+        box-shadow:0 4px 16px rgba(15,23,42,.12);
+        font-size:13px;
+      }
+      .rpt-page{padding:14px 12px 18px;}
+
+      /* Masthead — stack الـ docinfo على Mobile */
+      .rpt-mast{
+        flex-wrap:wrap;
+        gap:8px;
+        padding-bottom:10px;
+        margin-bottom:12px;
+      }
+
+      /* Title */
+      .rpt-doctitle{padding:8px 0!important;}
+
+      /* Section headers — أصغر */
+      .rpt-sec{margin:14px 0!important;}
+      .rpt-sec-title{margin-bottom:8px;}
+
+      /* ━━ Item Overview (الصورة + المعلومات) ━━ */
+      /* نحول من side-by-side إلى stacked */
+      .rpt-overview{
+        flex-direction:column!important;
+        gap:14px!important;
+      }
+      .rpt-overview-image{
+        flex:none!important;
+        width:100%!important;
+      }
+      .rpt-overview-image img,
+      .rpt-overview-image > div{
+        width:100%!important;
+        max-width:280px;
+        height:auto!important;
+        aspect-ratio:1;
+        margin:0 auto;
+      }
+      .rpt-overview-meta{flex:none!important;}
+
+      /* Meta table — قابلة للقراءة */
+      .rpt-meta{font-size:13px;}
+      .rpt-meta td{padding:6px 8px!important;}
+      .rpt-meta td.ml{width:90px!important;font-size:11px;}
+
+      /* ━━ Grand total — ما يكسرش ━━ */
+      .rpt-grand{
+        flex-direction:column!important;
+        align-items:flex-start!important;
+        gap:8px!important;
+        padding:14px 16px!important;
+      }
+      .rpt-grand-label{font-size:11px!important;}
+      .rpt-grand-sub{font-size:12px!important;}
+      .rpt-grand-value{
+        font-size:28px!important;
+        align-self:flex-end;
+        white-space:nowrap;
+      }
+      .rpt-grand-value-currency{font-size:14px!important;}
+
+      /* ━━ Tables — scrollable ━━ */
+      .rpt-table-wrap{
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+        margin:0 -4px;
+      }
+      .rpt-table{
+        font-size:12px;
+        min-width:100%;
+      }
+      .rpt-table thead th{padding:8px 6px!important;font-size:10px;}
+      .rpt-table tbody td{padding:8px 6px!important;}
+      .rpt-table tbody td.rowi{width:30px!important;font-size:11px;}
+      .rpt-table tfoot td{padding:10px 6px!important;font-size:12px;}
+
+      /* Color blocks */
+      .rpt-color{margin:14px 0!important;}
+      .rpt-color-head{padding:8px 10px!important;flex-wrap:wrap;gap:8px;}
+      .rpt-color-num{font-size:12px;}
+      .rpt-color-name{font-size:13px!important;}
+      .rpt-color-stats{font-size:11px!important;}
+      .rpt-color-swatch{width:36px!important;height:36px!important;}
+
+      /* KPIs */
+      .rpt-kpi{padding:10px!important;}
+      .rpt-kpi-val{font-size:18px!important;}
+      .rpt-kpi-lbl{font-size:9px!important;}
+
+      /* Signatures — stacked */
+      .rpt-sign{
+        flex-direction:column!important;
+        gap:18px!important;
+      }
+
+      /* Footer */
+      .rpt-foot{
+        flex-wrap:wrap;
+        gap:6px;
+        font-size:10px;
+        text-align:center;
+      }
+
+      /* Cover page — للـ full inventory PDF */
+      .rpt-cover{
+        min-height:auto!important;
+        padding:30px 16px!important;
+      }
+      .rpt-cover-top{margin-bottom:30px!important;}
+      .rpt-cover-title{font-size:28px!important;}
+      .rpt-cover-en{font-size:10px!important;letter-spacing:3px!important;}
+
+      /* ━━ إصلاح التداخل: rpt-top2col يصبح عمود واحد على الهاتف ━━ */
+      .rpt-top2col{
+        grid-template-columns:1fr!important;
+        gap:12px!important;
+      }
+
+      /* ━━ شبكة الألوان: 4 أعمدة → 2 على الهاتف ━━ */
+      .rpt-color-grid{grid-template-columns:repeat(2,1fr)!important;}
+
+      /* ━━ جدول الرولوات: scroll أفقي ━━ */
+      .rpt-table-wrap{
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+        border:1px solid #e2e8f0;
+        border-radius:4px;
+      }
+      .rpt-table-wrap .rpt-table{min-width:520px;}
+
+      /* Toolbar — sticky على الهاتف */
+      .rpt-tb{
+        position:sticky;
+        top:0;
+        z-index:50;
+        flex-wrap:wrap;
+        gap:6px;
+        padding:8px 10px!important;
+      }
+    }
+    /* ━━━ END mobile responsive ━━━ */
+
+    /* Cover page (full inventory report) */
+    .rpt-cover{min-height:260mm;padding:40mm 20mm 20mm;display:flex;flex-direction:column;text-align:center;page-break-after:always;break-after:page;position:relative;}
+    .rpt-cover-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40mm;}
+    .rpt-cover-mid{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+    .rpt-cover-kicker{color:#b45309;font-size:11px;letter-spacing:8px;text-transform:uppercase;font-weight:700;margin-bottom:6mm;}
+    .rpt-cover-title{font-size:44px;font-weight:800;color:#0f172a;line-height:1.05;letter-spacing:-1.2px;margin-bottom:6mm;}
+    .rpt-cover-en{color:#64748b;font-size:12px;letter-spacing:6px;text-transform:uppercase;font-weight:600;margin-bottom:12mm;}
+    .rpt-cover-rule{width:60mm;height:3px;background:#b45309;margin:0 auto 12mm;}
+    .rpt-cover-date{color:#0f172a;font-size:13px;font-weight:700;letter-spacing:3px;}
+    .rpt-cover-bottom{margin-top:auto;}
+    .rpt-cover-kpis{display:flex;gap:4mm;margin-top:20mm;}
+    .rpt-cover-kpi{flex:1;border:1.5px solid #0f172a;padding:6mm 3mm;text-align:center;}
+    .rpt-cover-kpi-v{font-size:28px;font-weight:800;color:#0f172a;line-height:1;font-variant-numeric:tabular-nums;}
+    .rpt-cover-kpi-l{font-size:9px;color:#64748b;letter-spacing:2px;text-transform:uppercase;margin-top:3mm;font-weight:700;}
+    .rpt-cover-kpi-gold{background:#0f172a;border-color:#0f172a;}
+    .rpt-cover-kpi-gold .rpt-cover-kpi-v{color:#fbbf24;}
+    .rpt-cover-kpi-gold .rpt-cover-kpi-l{color:#cbd5e1;}
+
+    /* Per-item wrapper for full report */
+    .rpt-item{page-break-before:always;break-before:page;padding:10mm 14mm 14mm;}
+    .rpt-item-head{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:3mm;border-bottom:2.5px solid #0f172a;margin-bottom:6mm;position:relative;}
+    .rpt-item-head::after{content:'';position:absolute;bottom:-5px;right:0;width:40mm;height:2px;background:#b45309;}
+    .rpt-item-head-l{flex:1;}
+    .rpt-item-badge{display:inline-block;background:#0f172a;color:#fff;font-size:9px;letter-spacing:2px;font-weight:700;padding:1mm 3mm;margin-bottom:2mm;}
+    .rpt-item-title{font-size:18px;font-weight:800;color:#0f172a;letter-spacing:-.3px;line-height:1.15;}
+    .rpt-item-sub{color:#64748b;font-size:10.5px;margin-top:1mm;}
+    .rpt-item-head-r{text-align:left;direction:ltr;}
+    .rpt-item-val-lbl{color:#64748b;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:1mm;}
+    .rpt-item-val-v{font-size:20px;font-weight:800;color:#b45309;letter-spacing:-.5px;line-height:1;font-variant-numeric:tabular-nums;}
+    .rpt-item-val-sub{color:#64748b;font-size:10px;margin-top:1mm;font-variant-numeric:tabular-nums;}
+
+    /* Compact meta strip (for full report items) */
+    .rpt-strip{display:flex;border:1px solid #cbd5e1;margin-bottom:5mm;}
+    .rpt-strip-c{flex:1;padding:2.5mm 3mm;border-left:1px solid #e2e8f0;}
+    .rpt-strip-c:first-child{border-left:0;}
+    .rpt-strip-l{color:#64748b;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:1mm;}
+    .rpt-strip-v{color:#0f172a;font-size:11px;font-weight:700;}
+
+    /* Toolbar (screen only, hidden in print) */
+    .rpt-tb{background:#0f172a;color:#fff;padding:0 16px;height:54px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;}
+    .rpt-tb-back{background:transparent;border:1px solid #334155;color:#cbd5e1;font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;padding:6px 14px;border-radius:4px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+    .rpt-tb-back:hover{background:#1e293b;}
+    .rpt-tb-title{flex:1;color:#e2e8f0;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .rpt-tb-actions{display:flex;gap:8px;flex-shrink:0;}
+    .rpt-tb-print{background:#b45309;border:none;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:8px 16px;border-radius:4px;cursor:pointer;white-space:nowrap;}
+    .rpt-tb-print:hover{background:#92400e;}
+    .rpt-tb-wa{background:#25d366;border:none;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:8px 14px;border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+    .rpt-tb-wa:hover{background:#128c7e;}
+    .rpt-tb-wa:disabled{opacity:.55;cursor:not-allowed;}
+    @media(max-width:520px){
+      /* صفّان: العنوان فوق، الأزرار تحت */
+      .rpt-tb{height:auto;flex-direction:column;align-items:stretch;padding:8px 10px;gap:7px;}
+      .rpt-tb-back{align-self:flex-start;}
+      .rpt-tb-title{font-size:12px;text-align:center;}
+      .rpt-tb-actions{gap:6px;}
+      .rpt-tb-wa,.rpt-tb-print{flex:1;justify-content:center;font-size:13px;padding:10px 8px;}
+    }
+
+    /* Empty state inside reports */
+    .rpt-empty{padding:20mm;text-align:center;color:#94a3b8;font-size:13px;border:1.5px dashed #cbd5e1;}

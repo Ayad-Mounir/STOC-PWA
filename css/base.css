@@ -1,0 +1,32 @@
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{background:#0d1117;font-family:'Cairo',sans-serif;direction:rtl;height:100%;-webkit-tap-highlight-color:transparent;}
+    /* ── إصلاح الأيقونات والنسب على الهاتف ── */
+    .dash-icon{display:inline-flex;align-items:center;justify-content:center;
+      width:52px;height:52px;background:rgba(255,255,255,0.15);
+      border-radius:14px;font-size:26px;line-height:1;flex-shrink:0;}
+    .dash-card{border:none;border-radius:14px;padding:18px 10px 16px;cursor:pointer;
+      font-family:'Cairo',sans-serif;color:#fff;text-align:center;
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      min-height:118px;position:relative;
+      box-shadow:0 3px 12px rgba(0,0,0,0.35);
+      -webkit-tap-highlight-color:transparent;
+      transition:transform 0.12s;}
+    .dash-card:active{transform:scale(0.96);}
+    .dash-card-title{font-size:14px;font-weight:800;letter-spacing:-0.2px;}
+    .dash-card-sub{font-size:10px;opacity:0.85;font-weight:600;line-height:1.4;min-height:14px;}
+    @media(max-width:360px){
+      .dash-icon{width:44px;height:44px;font-size:22px;}
+      .dash-card{min-height:106px;padding:14px 8px;}
+      .dash-card-title{font-size:13px;}
+    }
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:2px;}
+    input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+    input:focus,select:focus{border-color:#f59e0b!important;outline:none;}
+    button:active{opacity:.75;}
+    #root{min-height:100vh;}
+    /* iOS safe area */
+    .safe-top{padding-top:env(safe-area-inset-top);}
+    .safe-bot{padding-bottom:env(safe-area-inset-bottom);}
+

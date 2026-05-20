@@ -1,0 +1,11 @@
+#stoc-splash{position:fixed;inset:0;z-index:99999;background:#0d1117;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Cairo',sans-serif;direction:rtl;}
+.sl-ico{font-size:56px;margin-bottom:20px;animation:slfloat 2.8s ease-in-out infinite;}
+@keyframes slfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px);}}
+.sl-name{font-size:22px;font-weight:800;color:#e6edf3;margin-bottom:30px;}
+.sl-wrap{width:250px;}
+.sl-bg{width:100%;height:5px;background:#21262d;border-radius:10px;overflow:hidden;margin-bottom:9px;}
+.sl-fill{height:100%;border-radius:10px;width:0%;background:linear-gradient(90deg,#92400e,#b45309,#f59e0b,#fbbf24);background-size:300% 100%;animation:slshim 2s linear infinite;transition:width 0.5s ease;}
+@keyframes slshim{0%{background-position:300% center}100%{background-position:-300% center}}
+.sl-foot{display:flex;justify-content:space-between;}
+.sl-msg{font-size:11px;color:#6e7681;}
+.sl-pct{font-size:12px;font-weight:800;color:#f59e0b;}
