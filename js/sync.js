@@ -269,27 +269,28 @@
       var now = Date.now();
       await sb.from("stk_meta").upsert({ id:1, ts:now, reset_at:now, order_seq:0 });
     }
-    DB  = JSON.parse(JSON.stringify(SEED));
+    // مسح الذاكرة (RAM) فوراً
+    DB  = { factories:[], suppliers:[], customers:[], types:[], measures:[],
+            packagings:[], categories:[], sizes:[], items:[], orders:[], invoices:[],
+            ts: Date.now(), reset_at: Date.now() };
     CFG = Object.assign({}, SEED_CFG);
-    DB.ts = Date.now();
-    saveLocalDB(DB);
-    saveLocalCFG(CFG);
-    // مسح IndexedDB — المصدر الحقيقي للبيانات
-    try {
-      await new Promise(function(res, rej) {
-        var req = indexedDB.deleteDatabase("stk-idb-v1");
-        req.onsuccess = res;
-        req.onerror   = rej;
-        req.onblocked = res;
-      });
-    } catch(e) { console.warn("IDB delete failed:", e); }
-    // مسح localStorage بالكامل ما عدا إعدادات الاتصال
-    var keepKeys = ["stk-sb-cfg-v1", "stk-drive-cfg-v1", "stk-cost-types-v1", "stk-factory-v1"];
+    // مسح localStorage — حفظ مفاتيح الاتصال فقط
+    var keepKeys = [SB_CFG_KEY, "stk-supabase-cfg-v1", "stk-drive-cfg-v1", "stk-sb-cfg-v1"];
     var saved = {};
     keepKeys.forEach(function(k){ try{ saved[k]=localStorage.getItem(k); }catch{} });
-    localStorage.clear();
+    try { localStorage.clear(); } catch(e) {}
     keepKeys.forEach(function(k){ try{ if(saved[k]!=null) localStorage.setItem(k,saved[k]); }catch{} });
-    return { ok: true };
+    // حفظ DB الفارغ في localStorage
+    saveLocalDB(DB);
+    saveLocalCFG(CFG);
+    // مسح IndexedDB بالكامل
+    try {
+      await new Promise(function(res) {
+        var req = indexedDB.deleteDatabase("stk-idb-v1");
+        req.onsuccess = res; req.onerror = res; req.onblocked = res;
+      });
+    } catch(e) { console.warn("IDB delete:", e); }
+    return { ok: true, reset_at: DB.reset_at };
   }
 
   // ══════════════════════════════════════════════════════════════
