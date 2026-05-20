@@ -275,7 +275,7 @@
             ts: Date.now(), reset_at: Date.now() };
     CFG = Object.assign({}, SEED_CFG);
     // مسح localStorage — حفظ مفاتيح الاتصال فقط
-    var keepKeys = [SB_CFG_KEY, "stk-supabase-cfg-v1", "stk-drive-cfg-v1", "stk-sb-cfg-v1"];
+    var keepKeys = [SB_CFG_KEY, "stk-supabase-cfg-v1", "stk-drive-cfg-v1", "stk-sb-cfg-v1", "stoc-license-v1", "stoc-build"];
     var saved = {};
     keepKeys.forEach(function(k){ try{ saved[k]=localStorage.getItem(k); }catch{} });
     try { localStorage.clear(); } catch(e) {}
