@@ -76,34 +76,7 @@
 
   var SEED = {
     factories:[], suppliers:[], customers:[],
-    types:[
-      { id:"typ1", name:"قميص",   updated_at: NOW-30*86400000 },
-      { id:"typ2", name:"جلابة",  updated_at: NOW-30*86400000 },
-      { id:"typ3", name:"فستان",  updated_at: NOW-30*86400000 },
-      { id:"typ4", name:"بنطلون", updated_at: NOW-30*86400000 },
-    ],
-    measures:[
-      { id:"msr1", name:"متر",  updated_at: NOW-30*86400000 },
-      { id:"msr2", name:"قطعة", updated_at: NOW-30*86400000 },
-    ],
-    packagings:[
-      { id:"pkg1", name:"كيس بلاستيك", updated_at: NOW-30*86400000 },
-      { id:"pkg2", name:"علبة كرتون",  updated_at: NOW-30*86400000 },
-    ],
-    categories:[
-      { id:"cat1", name:"كاتون",        updated_at: NOW-30*86400000 },
-      { id:"cat2", name:"جيلابة",       updated_at: NOW-30*86400000 },
-      { id:"cat3", name:"ستان",         updated_at: NOW-30*86400000 },
-      { id:"cat4", name:"إكسسوار",      updated_at: NOW-30*86400000 },
-      { id:"cat5", name:"بضائع جاهزة", updated_at: NOW-30*86400000 },
-    ],
-    sizes:[
-      { id:"sz1", name:"S",   sortOrder:1, updated_at: NOW-30*86400000 },
-      { id:"sz2", name:"M",   sortOrder:2, updated_at: NOW-30*86400000 },
-      { id:"sz3", name:"L",   sortOrder:3, updated_at: NOW-30*86400000 },
-      { id:"sz4", name:"XL",  sortOrder:4, updated_at: NOW-30*86400000 },
-      { id:"sz5", name:"2XL", sortOrder:5, updated_at: NOW-30*86400000 },
-    ],
+    types:[], measures:[], packagings:[], categories:[], sizes:[],
     items:[], orders:[], invoices:[],
     ts: NOW - 86400000, reset_at: 0,
   };
@@ -426,7 +399,12 @@
 
     if (url === "/api/push"          && method === "POST") return respond(sbPush(pbody));
     if (url === "/api/settings"      && method === "POST") return respond(sbSaveSettings(pbody));
-    if (url === "/api/factory-reset" && method === "POST") return respond(sbFactoryReset());
+    if (url === "/api/factory-reset" && method === "POST") {
+      if (pbody.password !== "0000") {
+        return respond({ ok: false, error: "كلمة السر غير صحيحة" }, 403);
+      }
+      return respond(sbFactoryReset());
+    }
 
     return respond({ ok:false, error:"endpoint not implemented" }, 404);
   };
