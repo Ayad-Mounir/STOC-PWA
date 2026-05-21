@@ -3,8 +3,10 @@
    الإصدار: 3.0.0 — المكتبات منفصلة في مجلد libs/
    ════════════════════════════════════════════════════════ */
 
-const CACHE_NAME    = "stock-manager-v8";
-const RUNTIME_CACHE = "stock-runtime-v6";
+// [M2.4] رُفِّعت الإصدارات بعد إصلاح M1+M2
+// → يُجبر جميع العملاء على تحميل الكود الجديد تلقائياً
+const CACHE_NAME    = "stock-manager-v10";
+const RUNTIME_CACHE = "stock-runtime-v8";
 
 /* ── الأصول المُخزَّنة فور التثبيت (App Shell) ── */
 const PRECACHE_URLS = [
@@ -28,6 +30,7 @@ const PRECACHE_URLS = [
   /* JS core */
   "./js/loader.js",
   "./js/cache-buster.js",
+  "./js/i18n.js",
   "./js/error-handler.js",
   "./js/sync.js",
   "./js/auth.js",
@@ -79,7 +82,15 @@ self.addEventListener("fetch", event => {
           caches.open(RUNTIME_CACHE).then(c => c.put(event.request, clone));
         }
         return response;
-      }).catch(() => caches.match("./index.html"));
+      }).catch(() => {
+        // [M2.4] عند فشل الشبكة — لا شاشة بيضاء أبداً
+        // → navigation requests تعود بـ index.html من الـ cache
+        if (event.request.mode === "navigate") {
+          return caches.match("./index.html");
+        }
+        // → assets غير موجودة → index.html كـ fallback
+        return caches.match("./index.html");
+      });
     })
   );
 });
