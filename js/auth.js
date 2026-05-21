@@ -50,6 +50,10 @@
 
   // ── حفظ الترخيص ──
   function saveLicense(lic) {
+    // [M3.4] حفظ تاريخ التفعيل إن لم يكن موجوداً في الـ payload
+    if (!lic.activatedAt) {
+      lic.activatedAt = new Date().toISOString();
+    }
     localStorage.setItem(LIC_KEY, JSON.stringify(lic));
   }
 

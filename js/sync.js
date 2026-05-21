@@ -55,22 +55,123 @@
   window.__stkReinitSb = function() { _sb = null; return !!getClient(); };
   window.__stkSbReady  = function() { return !!getClient(); };
 
+  // ── استخراج project ID من URL Supabase ──
+  function getProjectId(url) {
+    try {
+      var m = (url || "").match(/https:\/\/([a-zA-Z0-9]+)\.supabase\.co/);
+      return m ? m[1] : "stoc-default";
+    } catch(e) { return "stoc-default"; }
+  }
+
   // ── Realtime subscription ──
+  // [M1.1] القناة تحمل اسماً ثابتاً مبنياً على project ID
+  //        بدل الاسم العشوائي القديم "stk-live-XXXX"
+  //        → جميع الأجهزة التابعة لنفس المشروع تستمع على نفس القناة
   var _channel = null;
   window.__stkRealtimeSubscribe = function(onUpdate) {
-    var sb = getClient();
+    var sb  = getClient();
+    var cfg = getSbCfg();
     if (!sb) return;
     if (_channel) { try { sb.removeChannel(_channel); } catch {} }
-    _channel = sb.channel("stk-live-" + Math.random().toString(36).slice(2,6))
+
+    // [M1.1] اسم قناة ثابت ومشترك بين جميع الأجهزة
+    var channelName = "stoc-sync-" + getProjectId(cfg.url);
+
+    _channel = sb.channel(channelName)
       .on("postgres_changes",
           { event: "*", schema: "public", table: "stk_data" },
-          function(payload) { onUpdate(payload); })
+          function(payload) {
+            // [M1.2] نُشغّل __stkTriggerSync بعد 300ms debounce
+            //        حتى لا يُزامن الجهاز المُرسِل البيانات التي أرسلها للتو
+            onUpdate(payload);
+            setTimeout(function() {
+              if (typeof window.__stkTriggerSync === "function") {
+                window.__stkTriggerSync("realtime");
+              }
+            }, 300);
+          })
       .subscribe(function(status) {
-        console.log("[Realtime] status:", status);
+        console.log("[Realtime] channel=" + channelName + " status=" + status);
+        if (status === "SUBSCRIBED") {
+          console.log("[Realtime] ✅ متصل — التزامن الفوري نشط");
+        }
       });
   };
 
-  // ── SEED — البيانات الأولية ──
+  // ══════════════════════════════════════════════════════════════
+  //  [M2.1] مراقب حالة الشبكة + قائمة التعديلات المعلقة
+  // ══════════════════════════════════════════════════════════════
+  var _isOnline = navigator.onLine;
+  const PENDING_QUEUE_KEY = "stk-pending-queue-v1";
+
+  // ── قراءة/كتابة قائمة الـ pending ──
+  function getPendingQueue() {
+    try { return JSON.parse(localStorage.getItem(PENDING_QUEUE_KEY)) || []; }
+    catch(e) { return []; }
+  }
+  function savePendingQueue(list) {
+    try { localStorage.setItem(PENDING_QUEUE_KEY, JSON.stringify(list)); } catch(e) {}
+  }
+  function addToPendingQueue(body) {
+    var list = getPendingQueue();
+    list.push({ body: body, ts: Date.now() });
+    savePendingQueue(list);
+    console.log("[Pending] أُضيف تعديل offline — الإجمالي:", list.length);
+  }
+
+  // ── إرسال التعديلات المعلقة عند الاتصال ──
+  async function flushPendingQueue() {
+    var list = getPendingQueue();
+    if (!list.length) return;
+    var sb = getClient();
+    if (!sb || !_isOnline) return;
+    console.log("[Pending] ⬆ إرسال", list.length, "تعديل معلق...");
+    var sent = 0;
+    for (var i = 0; i < list.length; i++) {
+      try {
+        await sbPush(list[i].body);
+        sent++;
+      } catch(e) {
+        console.warn("[Pending] فشل إرسال #" + i + ":", e.message);
+        // نحفظ الباقي ونوقف
+        savePendingQueue(list.slice(i));
+        return;
+      }
+    }
+    savePendingQueue([]);
+    console.log("[Pending] ✅ أُرسل " + sent + " تعديل بنجاح");
+    // إعلام app.js بالمزامنة
+    if (typeof window.__stkTriggerSync === "function") {
+      window.__stkTriggerSync("flush-pending");
+    }
+  }
+  window.__stkFlushPending   = flushPendingQueue;
+  window.__stkPendingCount   = function() { return getPendingQueue().length; };
+
+  // ── مراقبة الاتصال ──
+  window.addEventListener("online", function() {
+    _isOnline = true;
+    console.log("[Network] 🟢 اتصال متاح — جارٍ المزامنة");
+    // إعادة تفعيل Realtime بعد انقطاع
+    if (typeof window.__stkReattachRealtime === "function") {
+      window.__stkReattachRealtime();
+    }
+    // إرسال التعديلات المعلقة بعد ثانية
+    setTimeout(flushPendingQueue, 1000);
+  });
+
+  window.addEventListener("offline", function() {
+    _isOnline = false;
+    console.log("[Network] 🔴 انقطع الاتصال — وضع offline");
+    if (typeof window.__stkSetConnState === "function") {
+      window.__stkSetConnState("offline");
+    }
+  });
+
+  // واجهة خارجية لـ app.js
+  window.__stkIsOnline = function() { return _isOnline; };
+
+
   var TABLES = ["factories","suppliers","customers","types","measures",
                 "packagings","categories","sizes","items","orders","invoices"];
 
@@ -109,7 +210,13 @@
 
   async function sbPush(body) {
     var sb = getClient();
-    if (!sb) return localPush(body);
+    // [M2.3] إذا offline → حفظ محلي + إضافة إلى قائمة pending
+    if (!sb || !_isOnline) {
+      addToPendingQueue(body);
+      return localPush(body);
+    }
+    // تطبيق محلي فوري (optimistic update) بغض النظر عن Supabase
+    localPush(body);
     var now = Date.now();
     var applied = {};
     var orderNumbers = {};
@@ -163,10 +270,23 @@
 
   async function sbSnapshot() {
     var sb = getClient();
-    if (!sb) return localSnapshot();
-
-    var { data, error } = await sb.from("stk_data").select("*").is("deleted_at", null);
-    if (error || !data) return localSnapshot();
+    // [M2.2] fallback محلي إذا لا يوجد اتصال أو client
+    if (!sb || !_isOnline) {
+      console.log("[Sync] snapshot محلي (offline)");
+      return localSnapshot();
+    }
+    var data, error;
+    try {
+      var res = await sb.from("stk_data").select("*").is("deleted_at", null);
+      data = res.data; error = res.error;
+    } catch(e) {
+      console.warn("[Sync] sbSnapshot فشل — fallback محلي:", e.message);
+      return localSnapshot();
+    }
+    if (error || !data) {
+      console.warn("[Sync] sbSnapshot خطأ:", error?.message);
+      return localSnapshot();
+    }
 
     var out = Object.assign(JSON.parse(JSON.stringify(SEED)), { ts: Date.now(), reset_at: 0 });
     for (var i = 0; i < data.length; i++) {
@@ -176,13 +296,15 @@
     }
 
     // تحميل الـ config أيضاً
-    var cfgRes = await sb.from("stk_config").select("*");
-    if (cfgRes.data) {
-      for (var j = 0; j < cfgRes.data.length; j++) {
-        CFG[cfgRes.data[j].key] = cfgRes.data[j].value;
+    try {
+      var cfgRes = await sb.from("stk_config").select("*");
+      if (cfgRes.data) {
+        for (var j = 0; j < cfgRes.data.length; j++) {
+          CFG[cfgRes.data[j].key] = cfgRes.data[j].value;
+        }
+        saveLocalCFG(CFG);
       }
-      saveLocalCFG(CFG);
-    }
+    } catch(e) { console.warn("[Sync] stk_config فشل:", e.message); }
 
     saveLocalDB(out);
     DB = out;
@@ -191,13 +313,26 @@
 
   async function sbDelta(since) {
     var sb = getClient();
-    if (!sb) return localDelta(since);
+    // [M2.2] fallback محلي عند عدم الاتصال
+    if (!sb || !_isOnline) {
+      return localDelta(since);
+    }
     var sinceMs = parseInt(since, 10) || 0;
-
-    var { data, error } = await sb.from("stk_data").select("*").gt("updated_at", sinceMs);
+    var data, error;
+    try {
+      var res = await sb.from("stk_data").select("*").gt("updated_at", sinceMs);
+      data = res.data; error = res.error;
+    } catch(e) {
+      console.warn("[Sync] sbDelta فشل — fallback محلي:", e.message);
+      return localDelta(since);
+    }
     if (error || !data) return localDelta(since);
 
-    var metaRes = await sb.from("stk_meta").select("*").eq("id",1).single();
+    var metaRes = { data: null };
+    try {
+      metaRes = await sb.from("stk_meta").select("*").eq("id",1).single();
+    } catch(e) {}
+
     var out = {
       reset_at: (metaRes.data && metaRes.data.reset_at) || 0,
       ts: (metaRes.data && metaRes.data.ts) || Date.now(),
