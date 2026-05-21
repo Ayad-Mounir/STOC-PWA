@@ -148,6 +148,16 @@
   window.__stkFlushPending   = flushPendingQueue;
   window.__stkPendingCount   = function() { return getPendingQueue().length; };
 
+  // [AUTO-REFRESH] استدعاء تحديث الترخيص من auth.js عند كل sync
+  // throttle داخلي في auth.js (مرة كل ساعة) — لا خطر من الاستدعاء المتكرر
+  window.__stkCallLicenseRefresh = function() {
+    if (typeof window.__stkRefreshLicense === "function") {
+      window.__stkRefreshLicense().catch(function(e) {
+        console.warn("[Sync] license refresh خطأ:", e.message);
+      });
+    }
+  };
+
   // ── مراقبة الاتصال ──
   window.addEventListener("online", function() {
     _isOnline = true;

@@ -91,6 +91,86 @@
     return new Date(lic.expires) < new Date();
   }
 
+
+  // ══════════════════════════════════════════════════════════════
+  // [AUTO-REFRESH] تحديث الترخيص تلقائياً من السيرفر عند كل sync
+  // ══════════════════════════════════════════════════════════════
+  const REFRESH_INTERVAL_MS = 60 * 60 * 1000; // مرة كل ساعة كحد أقصى
+  var _lastRefreshAt = 0;
+
+  async function refreshLicenseFromServer() {
+    // throttle: لا نفحص أكثر من مرة في الساعة
+    var now = Date.now();
+    if (now - _lastRefreshAt < REFRESH_INTERVAL_MS) return;
+
+    var lic = getLicense();
+    if (!lic || !lic.code) return;
+
+    try {
+      // نجلب expires + frozen + sig من admin Supabase
+      var res = await fetch(
+        ADMIN_SB_URL + "/rest/v1/stoc_licenses?code=eq." +
+          encodeURIComponent(lic.code) +
+          "&select=expires,frozen,devices,sig",
+        {
+          headers: {
+            "apikey":        ADMIN_SB_KEY,
+            "Authorization": "Bearer " + ADMIN_SB_KEY
+          }
+        }
+      );
+      if (!res.ok) return; // فشل الشبكة → لا نمس الترخيص المحلي
+
+      var rows = await res.json();
+      if (!rows || !rows.length) return;
+      var row = rows[0];
+
+      _lastRefreshAt = now;
+
+      // ── تجميد ──
+      if (row.frozen) {
+        console.log("[License] 🔒 الترخيص مجمَّد من Admin → إيقاف التطبيق");
+        showFrozenScreen("تم تجميد هذا الحساب من المدير.");
+        return;
+      }
+
+      // ── تاريخ الانتهاء تغيَّر ──
+      var serverExpires = row.expires || null;
+      var localExpires  = lic.expires  || null;
+
+      if (serverExpires !== localExpires) {
+        console.log("[License] 🔄 تاريخ الانتهاء تغيَّر:",
+          localExpires, "→", serverExpires);
+
+        // تحديث الترخيص المحلي
+        lic.expires = serverExpires;
+        // نعيد حساب التفعيل (ليس انتهاء صلاحية الآن)
+        saveLicense(lic);
+
+        // إعلام قسم الإعدادات بالتغيير
+        window.dispatchEvent(new CustomEvent("stoc-license-updated", {
+          detail: { expires: serverExpires }
+        }));
+
+        // تنبيه المستخدم (فقط إذا كان التطبيق مفتوحاً)
+        console.log("[License] ✅ تم تحديث تاريخ الانتهاء تلقائياً إلى:", serverExpires || "دائم");
+      }
+
+      // ── انتهاء الصلاحية ──
+      if (serverExpires && new Date(serverExpires) < new Date()) {
+        console.log("[License] ⛔ الترخيص منتهي");
+        showFrozenScreen("انتهت صلاحية هذا الترخيص. تواصل مع المدير للتجديد.");
+      }
+
+    } catch(e) {
+      // أي خطأ → نتجاهل ونكمل (offline-friendly)
+      console.warn("[License] refreshLicenseFromServer خطأ:", e.message);
+    }
+  }
+
+  // واجهة عامة يستدعيها sync.js عند كل مزامنة
+  window.__stkRefreshLicense = refreshLicenseFromServer;
+
   // ── واجهة مسح QR ──
 function showFrozenScreen(reason){if(typeof window.__STOC_HIDE_LOADER__==="function")window.__STOC_HIDE_LOADER__();var ex=document.getElementById("stoc-frozen-screen");if(ex)ex.remove();var el=document.createElement("div");el.id="stoc-frozen-screen";el.style.cssText="position:fixed;inset:0;background:#0d1117;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:Cairo,sans-serif;padding:32px;text-align:center;";el.innerHTML='<div style="font-size:56px;margin-bottom:16px">🔒</div>'+'<div style="color:#f85149;font-size:20px;font-weight:800;margin-bottom:10px">الحساب موقوف مؤقتاً</div>'+'<div style="color:#8b949e;font-size:13px;line-height:1.7;max-width:280px">'+(reason||"تم تجميد هذا الحساب من المدير. سيتم التحقق تلقائياً.")+"</div>"+'<div id="stoc-frozen-cd" style="color:#3fb950;font-size:12px;margin-top:18px"></div>';document.body.appendChild(el);var cnt=15,tries=0;var tm=setInterval(function(){cnt--;var cd=document.getElementById("stoc-frozen-cd");if(cd)cd.textContent="إعادة المحاولة خلال "+cnt+" ثانية…";if(cnt<=0){cnt=Math.min(15+tries*5,60);tries++;if(cd)cd.textContent="جارٍ التحقق…";if(typeof window.__stkCheckLicense==="function"){window.__stkCheckLicense().then(function(ok){if(ok){clearInterval(tm);var sc=document.getElementById("stoc-frozen-screen");if(sc)sc.remove();}}).catch(function(){});}}},1000);}
   function showActivationScreen(initialMessage) {
