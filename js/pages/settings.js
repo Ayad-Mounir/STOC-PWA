@@ -161,6 +161,14 @@ function getLicenseInfo() {
 
 // M3.2 — بطاقة عرض معلومات الترخيص
 function LicenseInfoCard() {
+  // [AUTO-REFRESH] إعادة رسم البطاقة عند تحديث الترخيص تلقائياً
+  var [_tick, _setTick] = React.useState(0);
+  React.useEffect(function() {
+    function onLicUpdate() { _setTick(function(t) { return t + 1; }); }
+    window.addEventListener("stoc-license-updated", onLicUpdate);
+    return function() { window.removeEventListener("stoc-license-updated", onLicUpdate); };
+  }, []);
+
   var lic = getLicenseInfo();
 
   // ── حالة: لا يوجد ترخيص ──
