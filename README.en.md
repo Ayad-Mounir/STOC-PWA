@@ -258,7 +258,7 @@ This project is currently **closed source**. For inquiries:
 
 - **GitHub:** [@Ayad-Mounir](https://github.com/Ayad-Mounir)
 - **Email:** contact.ayad.mounir@gmail.com
-- **WhatsApp:** +212 6 53 86 76 67
+- **WhatsApp:** [+212 6 53 86 76 67](https://wa.me/212653867667)
 
 ---
 
