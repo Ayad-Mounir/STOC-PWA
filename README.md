@@ -293,7 +293,7 @@ STOC PWA يمكن تثبيته على أي جهاز:
 
 - **GitHub:** [@Ayad-Mounir](https://github.com/Ayad-Mounir)
 - **البريد الإلكتروني:** contact.ayad.mounir@gmail.com
-- **واتساب:** +212 653 867 667
+- **واتساب:** +212 6 53 86 76 67
 
 ---
 
@@ -305,8 +305,7 @@ STOC PWA يمكن تثبيته على أي جهاز:
 
 <div align="center">
 
-صُنع بـ ❤️ في المغرب 🇲🇦
-
 **STOC v5 — Stock Manager PWA**
 
 </div>
+
