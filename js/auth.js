@@ -32,7 +32,9 @@
     }
   }
   async function verify(payload) {
-    const { sig, ...data } = payload;
+    // نستثني sig + الحقول الإضافية التي أُضيفت بعد التوقيع (clientId, geminiKey)
+    // لمطابقة ما يوقّعه Admin: { company, url, key, expires, devices, code, v }
+    const { sig, clientId, geminiKey, ...data } = payload;
     const msg = JSON.stringify(data) + SECRET;
     const buf = await crypto.subtle.digest("SHA-256",
       new TextEncoder().encode(msg));
