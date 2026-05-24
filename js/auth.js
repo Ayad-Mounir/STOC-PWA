@@ -135,11 +135,11 @@
     if (!lic || !lic.code) return;
 
     try {
-      // نجلب expires + frozen + sig من admin Supabase
+      // نجلب كل الحقول القابلة للتحديث عن بُعد من admin Supabase
       var res = await fetch(
         ADMIN_SB_URL + "/rest/v1/stoc_licenses?code=eq." +
           encodeURIComponent(lic.code) +
-          "&select=expires,frozen,devices,sig",
+          "&select=expires,frozen,devices,sig,sb_url,sb_key,accounts",
         {
           headers: {
             "apikey":        ADMIN_SB_KEY,
@@ -162,26 +162,56 @@
         return;
       }
 
-      // ── تاريخ الانتهاء تغيَّر ──
+      var changed = false;
+
+      // ── تاريخ الانتهاء ──
       var serverExpires = row.expires || null;
       var localExpires  = lic.expires  || null;
-
       if (serverExpires !== localExpires) {
-        console.log("[License] 🔄 تاريخ الانتهاء تغيَّر:",
-          localExpires, "→", serverExpires);
-
-        // تحديث الترخيص المحلي
+        console.log("[License] 🔄 expires:", localExpires, "→", serverExpires);
         lic.expires = serverExpires;
-        // نعيد حساب التفعيل (ليس انتهاء صلاحية الآن)
+        changed = true;
+      }
+
+      // ── Supabase URL + Key ──
+      if (row.sb_url && row.sb_url !== lic.url) {
+        console.log("[License] 🔄 sb_url تغيّر");
+        lic.url = row.sb_url;
+        changed = true;
+      }
+      if (row.sb_key && row.sb_key !== lic.key) {
+        console.log("[License] 🔄 sb_key تغيّر");
+        lic.key = row.sb_key;
+        changed = true;
+      }
+
+      // ── accounts: geminiKey + clientId ──
+      var acc = row.accounts || {};
+      if (acc.geminiKey && acc.geminiKey !== lic.geminiKey) {
+        console.log("[License] 🔄 geminiKey تغيّر");
+        lic.geminiKey = acc.geminiKey;
+        changed = true;
+      }
+      if (acc.clientId !== undefined && acc.clientId !== lic.clientId) {
+        console.log("[License] 🔄 clientId تغيّر");
+        lic.clientId = acc.clientId;
+        changed = true;
+      }
+
+      // ── تطبيق التغييرات ──
+      if (changed) {
         saveLicense(lic);
-
-        // إعلام قسم الإعدادات بالتغيير
+        applyLicense(lic);
         window.dispatchEvent(new CustomEvent("stoc-license-updated", {
-          detail: { expires: serverExpires }
+          detail: {
+            expires:    lic.expires,
+            url:        lic.url,
+            key:        lic.key,
+            geminiKey:  lic.geminiKey,
+            clientId:   lic.clientId
+          }
         }));
-
-        // تنبيه المستخدم (فقط إذا كان التطبيق مفتوحاً)
-        console.log("[License] ✅ تم تحديث تاريخ الانتهاء تلقائياً إلى:", serverExpires || "دائم");
+        console.log("[License] ✅ تم تحديث إعدادات الترخيص تلقائياً");
       }
 
       // ── انتهاء الصلاحية ──
