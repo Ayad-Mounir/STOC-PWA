@@ -5,8 +5,8 @@
 
 // [M2.4] رُفِّعت الإصدارات بعد إصلاح M1+M2
 // → يُجبر جميع العملاء على تحميل الكود الجديد تلقائياً
-const CACHE_NAME    = "stock-manager-v13"; // [AUTO-REFRESH]
-const RUNTIME_CACHE = "stock-runtime-v11";
+const CACHE_NAME    = "stock-manager-v14"; // [AUTO-REFRESH]
+const RUNTIME_CACHE = "stock-runtime-v12";
 
 /* ── الأصول المُخزَّنة فور التثبيت (App Shell) ── */
 const PRECACHE_URLS = [
