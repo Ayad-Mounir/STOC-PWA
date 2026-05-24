@@ -5,8 +5,8 @@
 
 // [M2.4] رُفِّعت الإصدارات بعد إصلاح M1+M2
 // → يُجبر جميع العملاء على تحميل الكود الجديد تلقائياً
-const CACHE_NAME    = "stock-manager-v11"; // [AUTO-REFRESH]
-const RUNTIME_CACHE = "stock-runtime-v9";
+const CACHE_NAME    = "stock-manager-v12"; // [AUTO-REFRESH]
+const RUNTIME_CACHE = "stock-runtime-v10";
 
 /* ── الأصول المُخزَّنة فور التثبيت (App Shell) ── */
 const PRECACHE_URLS = [
@@ -73,23 +73,28 @@ self.addEventListener("fetch", event => {
   if (url.includes("supabase.co") || url.includes("googleapis.com")) {
     return;
   }
+
+  // تجاهل query parameters عند البحث في الكاش (يحل مشكلة ?source=pwa وغيرها)
+  const cleanRequest = new Request(url.split("?")[0], event.request);
+
   event.respondWith(
-    caches.match(event.request).then(cached => {
+    caches.match(cleanRequest).then(cached => {
       if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response && response.status === 200 && response.type === "basic") {
-          const clone = response.clone();
-          caches.open(RUNTIME_CACHE).then(c => c.put(event.request, clone));
-        }
-        return response;
-      }).catch(() => {
-        // [M2.4] عند فشل الشبكة — لا شاشة بيضاء أبداً
-        // → navigation requests تعود بـ index.html من الـ cache
-        if (event.request.mode === "navigate") {
+      // جرب أيضاً بالرابط الأصلي
+      return caches.match(event.request).then(cached2 => {
+        if (cached2) return cached2;
+        return fetch(event.request).then(response => {
+          if (response && response.status === 200 && response.type === "basic") {
+            const clone = response.clone();
+            caches.open(RUNTIME_CACHE).then(c => c.put(cleanRequest, clone));
+          }
+          return response;
+        }).catch(() => {
+          if (event.request.mode === "navigate") {
+            return caches.match("./index.html");
+          }
           return caches.match("./index.html");
-        }
-        // → assets غير موجودة → index.html كـ fallback
-        return caches.match("./index.html");
+        });
       });
     })
   );
