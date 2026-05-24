@@ -1129,6 +1129,9 @@
   })();
 
   /* ── الواجهة العامة ── */
+  /* ── shortcut global: t() قابل للاستخدام مباشرةً في كل الملفات ── */
+  window.t = function(k) { return window.__i18n ? window.__i18n.t(k) : k; };
+
   window.__i18n = {
     t:          t,
     setLang:    setLang,
