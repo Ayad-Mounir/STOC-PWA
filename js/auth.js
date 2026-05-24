@@ -66,6 +66,32 @@
       }));
     } catch(e) {}
 
+    // حفظ Google Client ID في Drive config إن وُجد في الترخيص
+    if (lic.clientId) {
+      try {
+        const DRIVE_CFG_KEY = "stk-drive-cfg-v1";
+        const driveCfg = JSON.parse(localStorage.getItem(DRIVE_CFG_KEY) || "{}");
+        driveCfg.clientId = lic.clientId;
+        localStorage.setItem(DRIVE_CFG_KEY, JSON.stringify(driveCfg));
+      } catch(e) {}
+    }
+
+    // حفظ Gemini API Key إن وُجد في الترخيص
+    if (lic.geminiKey) {
+      try {
+        const AI_KEYS_KEY = "stk-gemini-keys-v1";
+        const AI_IDX_KEY  = "stk-gemini-idx-v1";
+        // أضف المفتاح كأول مفتاح مع الاحتفاظ بالمفاتيح الإضافية التي أدخلها المستخدم
+        var existingKeys = JSON.parse(localStorage.getItem(AI_KEYS_KEY) || "[]");
+        // استبدل المفتاح الأول (مفتاح الأدمن) واحتفظ بالباقي
+        existingKeys[0] = lic.geminiKey;
+        localStorage.setItem(AI_KEYS_KEY, JSON.stringify(existingKeys));
+        localStorage.setItem("stk-ai-v1", lic.geminiKey); // توافق مع الكود القديم
+        localStorage.setItem(AI_IDX_KEY, "0");
+        if (window.__stkGeminiKeys) window.__stkGeminiKeys = existingKeys;
+      } catch(e) {}
+    }
+
     // حفظ اسم الشركة في factory settings
     try {
       let factory = JSON.parse(localStorage.getItem(FACTORY_KEY) || "null") || {};
